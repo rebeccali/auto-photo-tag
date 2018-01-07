@@ -1,6 +1,6 @@
 # Auto Photo Tag
 
-Copyright (c) Rebecca Li 2018 under the Creative Commons License.
+Copyright (c) Rebecca Li 2018 under the MIT License.
 
 Auto Photo Tag is a photo tagging tool that utilizes CNNs in order to identify scene attributes and the humans in the image, and populates those tags in the image metadata. Auto Photo Tag works on all kinds of images, including full size RAW image formats (DNG, NEF, RAW) as well as compressed image formats (JPG, PNG, BMP, GIF, TIFF).
 
