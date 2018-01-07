@@ -12,6 +12,7 @@ import numpy as np
 from scipy.misc import imresize as imresize
 import cv2
 from PIL import Image
+import sys
 
 
 def load_labels():
@@ -19,8 +20,8 @@ def load_labels():
     # scene category relevant
     file_name_category = 'categories_places365.txt'
     if not os.access(file_name_category, os.W_OK):
-        synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/categories_places365.txt'
-        os.system('wget ' + synset_url)
+        print('categories_places365.txt not found!')
+        sys.exit(1)
     classes = list()
     with open(file_name_category) as class_file:
         for line in class_file:
@@ -30,8 +31,8 @@ def load_labels():
     # indoor and outdoor relevant
     file_name_IO = 'IO_places365.txt'
     if not os.access(file_name_IO, os.W_OK):
-        synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/IO_places365.txt'
-        os.system('wget ' + synset_url)
+        print('IO_places365.txt not found!')
+        sys.exit(1)
     with open(file_name_IO) as f:
         lines = f.readlines()
         labels_IO = []
@@ -43,15 +44,15 @@ def load_labels():
     # scene attribute relevant
     file_name_attribute = 'labels_sunattribute.txt'
     if not os.access(file_name_attribute, os.W_OK):
-        synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/labels_sunattribute.txt'
-        os.system('wget ' + synset_url)
+        print('labels_sunattribute.txt not found!')
+        sys.exit(1)
     with open(file_name_attribute) as f:
         lines = f.readlines()
         labels_attribute = [item.rstrip() for item in lines]
     file_name_W = 'W_sceneattribute_wideresnet18.npy'
     if not os.access(file_name_W, os.W_OK):
-        synset_url = 'http://places2.csail.mit.edu/models_places365/W_sceneattribute_wideresnet18.npy'
-        os.system('wget ' + synset_url)
+        print('W_sceneattribute_wideresnet18.npy not found!')
+        sys.exit(1)
     W_attribute = np.load(file_name_W)
 
     return classes, labels_IO, labels_attribute, W_attribute
@@ -88,8 +89,8 @@ def load_model():
 
     model_file = 'whole_wideresnet18_places365_python36.pth.tar'
     if not os.access(model_file, os.W_OK):
-        os.system('wget http://places2.csail.mit.edu/models_places365/' + model_file)
-        os.system('wget https://raw.githubusercontent.com/csailvision/places365/master/wideresnet.py')
+        print('whole_wideresnet18_places365_python36.pth.tar not found!')
+        sys.exit(1)
     useGPU = 0
     if useGPU == 1:
         model = torch.load(model_file)
@@ -129,9 +130,11 @@ weight_softmax = params[-2].data.numpy()
 weight_softmax[weight_softmax<0] = 0
 
 # load the test image
-img_url = 'http://places2.csail.mit.edu/imgs/12.jpg'
-os.system('wget %s -q -O test.jpg' % img_url)
-img = Image.open('test.jpg')
+# img_url = 'http://places2.csail.mit.edu/imgs/12.jpg'
+
+# os.system('wget %s -q -O test.jpg' % img_url)
+imgpath = 'field.jpg'
+img = Image.open(imgpath)
 input_img = V(tf(img).unsqueeze(0), volatile=True)
 
 # forward pass
@@ -139,7 +142,7 @@ logit = model.forward(input_img)
 h_x = F.softmax(logit, 1).data.squeeze()
 probs, idx = h_x.sort(0, True)
 
-print('RESULT ON ' + img_url)
+# print('RESULT ON ' + img_url)
 
 # output the IO prediction
 io_image = np.mean(labels_IO[idx[:10].numpy()]) # vote for the indoor or outdoor
@@ -165,7 +168,7 @@ print('Class activation map is saved as cam.jpg')
 CAMs = returnCAM(features_blobs[0], weight_softmax, [idx[0]])
 
 # render the CAM and output
-img = cv2.imread('test.jpg')
+img = cv2.imread(imgpath)
 height, width, _ = img.shape
 heatmap = cv2.applyColorMap(cv2.resize(CAMs[0],(width, height)), cv2.COLORMAP_JET)
 result = heatmap * 0.4 + img * 0.5
