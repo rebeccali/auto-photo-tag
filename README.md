@@ -17,7 +17,7 @@ Auto Photo Tag utilizes the following CNN projects using PyTorch:
 * Add Human identifiers
 
 
-### Reference
+## Reference
 Link: [Places2 Database](http://places2.csail.mit.edu), [Places1 Database](http://places.csail.mit.edu)
 
 ### Acknowledgements and License
