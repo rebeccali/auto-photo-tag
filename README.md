@@ -1,10 +1,10 @@
-# Photosearch
+# Auto Photo Tag
 
 Copyright (c) Rebecca Li 2018 under the Creative Commons License.
 
-Photosearch is a photo tagging tool that utilizes CNNs in order to identify scene attributes and the humans in the image, and populates those tags in the image metadata. Photosearch works on all kinds of images, including full size RAW image formats (DNG, NEF, RAW) as well as compressed image formats (JPG, PNG, BMP, GIF, TIFF).
+Auto Photo Tag is a photo tagging tool that utilizes CNNs in order to identify scene attributes and the humans in the image, and populates those tags in the image metadata. Auto Photo Tag works on all kinds of images, including full size RAW image formats (DNG, NEF, RAW) as well as compressed image formats (JPG, PNG, BMP, GIF, TIFF).
 
-Photosearch utilizes the following CNN projects using PyTorch:
+Auto Photo Tag utilizes the following CNN projects using PyTorch:
  * [Places Project](http://places2.csail.mit.edu)
 
 
