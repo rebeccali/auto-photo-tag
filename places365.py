@@ -24,6 +24,7 @@ class Place365(object):
         self.features_blobs.append(np.squeeze(output.data.cpu().numpy()))
 
     def print_identification(self):
+        print(self._imgpath)
         print('--TYPE OF ENVIRONMENT: ' + self._env)
         print('--SCENE CATEGORIES:')
         for i in range(0, 5):
