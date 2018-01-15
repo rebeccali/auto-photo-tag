@@ -158,29 +158,16 @@ class Place365(object):
         io_image = np.mean(labels_IO[idx[:10].numpy()]) # vote for the indoor or outdoor
         scene_env = ''
         if io_image < 0.5:
-            print('--TYPE OF ENVIRONMENT: indoor')
             scene_env = 'indoor'
         else:
-            print('--TYPE OF ENVIRONMENT: outdoor')
             scene_env = 'outdoor'
-
-
-        # output the prediction of scene category
-        print('--SCENE CATEGORIES:')
-        for i in range(0, 5):
-            print('{:.3f} -> {}'.format(probs[i], classes[idx[i]]))
-
 
         # output the scene attributes
         responses_attribute = W_attribute.dot(self.features_blobs[1])
         idx_a = np.argsort(responses_attribute)
-        print('--SCENE ATTRIBUTES:')
-        print(', '.join([labels_attribute[idx_a[i]] for i in range(-1,-10,-1)]))
-
 
         if render_cam:
             # generate class activation mapping
-            print('Class activation map is saved as cam.jpg')
             CAMs = self.returnCAM(self.features_blobs[0], weight_softmax, [idx[0]])
 
             # render the CAM and output
