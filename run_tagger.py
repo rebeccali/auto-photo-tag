@@ -16,7 +16,7 @@ parser.add_argument('path', type=str, help='input image file')
 
 args = parser.parse_args()
 
-acceptedFileExtentions = ['png', 'jpg']
+acceptedFileExtentions = ['jpg']
 
 # get files in directory
 if os.path.isfile(args.path):

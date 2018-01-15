@@ -20,11 +20,17 @@ import sys
 class Place365(object):
     features_blobs = []
 
+    def image_var_laplacian(self, img):
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        return cv2.Laplacian(gray, cv2.CV_64F).var()
+
+
     def hook_feature(self, module, input, output):
         self.features_blobs.append(np.squeeze(output.data.cpu().numpy()))
 
     def print_identification(self):
         print(self._imgpath)
+        print('--BLURRY: ' + str(self._bluriness))
         print('--TYPE OF ENVIRONMENT: ' + self._env)
         print('--SCENE CATEGORIES:')
         for i in range(0, 5):
@@ -143,9 +149,9 @@ class Place365(object):
         weight_softmax[weight_softmax<0] = 0
 
         # load the test image
-        # imgpath = 'field.jpg'
-
         img = Image.open(imgpath)
+        img_cv2 = cv2.imread(imgpath)
+        bluriness = self.image_var_laplacian(img_cv2)
         input_img = V(tf(img).unsqueeze(0), volatile=True)
 
         # forward pass
@@ -179,6 +185,7 @@ class Place365(object):
             cv2.imwrite('cam.jpg', result)
 
         self._imgpath = imgpath
+        self._bluriness = bluriness
         self._probs = probs[:5]
         self._idx = probs[:5]
         self._env = scene_env
