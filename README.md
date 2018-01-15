@@ -15,6 +15,7 @@ Auto Photo Tag utilizes the following CNN projects using PyTorch:
 * Work on a folder of images
 * Add a UI
 * Add Human identifiers
+* Add Sharp/Blurry image tag
 
 
 ## Reference
