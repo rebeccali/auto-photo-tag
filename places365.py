@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # PlacesCNN to predict the scene category, attribute, and class activation map in a single pass
 # by Bolei Zhou, sep 2, 2017
-# last modified date: Dec. 27, 2017, migrating everything to python36 and latest pytorch and torchvision
+
 
 import torch
 from torch.autograd import Variable as V
@@ -164,6 +166,9 @@ class Place365(object):
         # load the test image
         img = Image.open(imgpath)
 
+        # this can only handle rgb images
+        if not img.mode == 'RGB':
+            img = img.convert('RGB')
         input_img = V(tf(img).unsqueeze(0), volatile=True)
 
         # forward pass
@@ -195,7 +200,7 @@ class Place365(object):
             cv2.imwrite('cam.jpg', result)
 
         self._imgpath = imgpath
-        self._bluriness = compute_blurriness(imgpath)
+        self._bluriness = self.compute_blurriness(imgpath)
         self._probs = probs[:5]
         self._idx = probs[:5]
         self._env = scene_env

@@ -10,13 +10,16 @@ import glob
 from datetime import datetime
 
 import places365 as pl
+import tagger
 
 parser = argparse.ArgumentParser(description='Run image tagger.')
 parser.add_argument('path', type=str, help='input image file')
+parser.add_argument('--stfu', help='stfu', action='store_true', default=False)
+parser.add_argument('--names-only', help='print filenames only', default=False, action='store_true' )
 
 args = parser.parse_args()
 
-acceptedFileExtentions = ['jpg']
+acceptedFileExtentions = ['jpg','png', 'tif', 'dng', 'nef' ]
 
 # get files in directory
 if os.path.isfile(args.path):
@@ -29,7 +32,7 @@ else:
 paths = []
 
 for raw_path in raw_paths:
-    if raw_path.endswith(tuple(acceptedFileExtentions)):
+    if raw_path.lower().endswith(tuple(acceptedFileExtentions)):
         paths.append(raw_path)
 
 num_images = len(paths)
@@ -43,11 +46,15 @@ startTime = datetime.now()
 
 for path in paths:
     imgplaces = pl.Place365(path, True)
-    imgplaces.print_identification()
+    if args.names_only:
+        print(imgplaces._imgpath)
+    elif not args.stfu:
+        imgplaces.print_identification()
 
 elapsed_time = (datetime.now() - startTime).total_seconds()
 elapsed_time_per_image = elapsed_time / num_images
 
-print('Process time: %0.2f seconds' % elapsed_time )
-print('Process time per image: %0.2f milliseconds' % elapsed_time_per_image )
+if not args.stfu:
+    print('Process time: %0.2f seconds' % elapsed_time )
+    print('Process time per image: %0.2f milliseconds' % elapsed_time_per_image )
 
