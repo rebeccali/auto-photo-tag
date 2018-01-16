@@ -24,13 +24,21 @@ class Place365(object):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         return cv2.Laplacian(gray, cv2.CV_64F).var()
 
+    def image_var_canny(self, img):
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        return cv2.Canny(img,100,200).var()
 
     def hook_feature(self, module, input, output):
         self.features_blobs.append(np.squeeze(output.data.cpu().numpy()))
 
     def print_identification(self):
+        print('----------------------------------------')
+
         print(self._imgpath)
         print('--BLURRY: ' + str(self._bluriness))
+        if self._bluriness < 1000:
+            print('I think it\'s blurry!')
+
         print('--TYPE OF ENVIRONMENT: ' + self._env)
         print('--SCENE CATEGORIES:')
         for i in range(0, 5):
@@ -151,7 +159,8 @@ class Place365(object):
         # load the test image
         img = Image.open(imgpath)
         img_cv2 = cv2.imread(imgpath)
-        bluriness = self.image_var_laplacian(img_cv2)
+        # bluriness = self.image_var_laplacian(img_cv2)
+        bluriness = self.image_var_canny(img_cv2)
         input_img = V(tf(img).unsqueeze(0), volatile=True)
 
         # forward pass
