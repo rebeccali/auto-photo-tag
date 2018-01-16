@@ -29,9 +29,7 @@ Example:
 
 ## Todo
 
-* Add image converter
 * Add tags to original raw images.
-* Work on a folder of images
 * Add a UI
 * Add Human identifiers
 
