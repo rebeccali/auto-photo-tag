@@ -13,7 +13,7 @@ import places365 as pl
 import tagger
 
 parser = argparse.ArgumentParser(description='Run image tagger.')
-parser.add_argument('path', type=str, help='input image file')
+parser.add_argument('path', type=str, help='input image file or folder')
 parser.add_argument('--stfu', help='stfu', action='store_true', default=False)
 parser.add_argument('--names-only', help='print filenames only', default=False, action='store_true' )
 
