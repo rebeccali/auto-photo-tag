@@ -110,6 +110,11 @@ class Place365(object):
             trn.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ])
         return tf
+    def compute_blurriness(self, imgpath):
+        img_cv2 = cv2.imread(imgpath)
+        # bluriness = self.image_var_laplacian(img_cv2)
+        bluriness = self.image_var_canny(img_cv2)
+        return bluriness
 
     def load_model(self):
         # this model has a last conv feature map as 14x14
@@ -158,17 +163,13 @@ class Place365(object):
 
         # load the test image
         img = Image.open(imgpath)
-        img_cv2 = cv2.imread(imgpath)
-        # bluriness = self.image_var_laplacian(img_cv2)
-        bluriness = self.image_var_canny(img_cv2)
+
         input_img = V(tf(img).unsqueeze(0), volatile=True)
 
         # forward pass
         logit = model.forward(input_img)
         h_x = F.softmax(logit, 1).data.squeeze()
         probs, idx = h_x.sort(0, True)
-
-
 
         # output the IO prediction
         io_image = np.mean(labels_IO[idx[:10].numpy()]) # vote for the indoor or outdoor
@@ -194,7 +195,7 @@ class Place365(object):
             cv2.imwrite('cam.jpg', result)
 
         self._imgpath = imgpath
-        self._bluriness = bluriness
+        self._bluriness = compute_blurriness(imgpath)
         self._probs = probs[:5]
         self._idx = probs[:5]
         self._env = scene_env

@@ -7,6 +7,25 @@ Auto Photo Tag is a photo tagging tool that utilizes CNNs in order to identify s
 Auto Photo Tag utilizes the following CNN projects using PyTorch:
  * [Places Project](http://places2.csail.mit.edu)
 
+## Dependencies
+
+Unfortunately, this project relies upon many python 3 packages:
+
+* Scipy
+* OpenCV
+* PIL
+* Torch
+* Numpy
+
+## Usage
+
+Run `run_tagger.py` with an argument of a folder or file to be tagged.
+
+Example:
+```
+./run_tagger.py testImages
+```
+
 
 ## Todo
 
@@ -15,7 +34,6 @@ Auto Photo Tag utilizes the following CNN projects using PyTorch:
 * Work on a folder of images
 * Add a UI
 * Add Human identifiers
-* Add Sharp/Blurry image tag
 
 
 ## Reference
