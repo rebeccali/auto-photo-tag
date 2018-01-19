@@ -43,6 +43,7 @@ startTime = datetime.now()
 
 for path in paths:
     imgplaces = pl.TaggedImage(path, True)
+    pl.update_xmp(path)
     if args.names_only:
         print(imgplaces.get_imgpath)
     elif not args.stfu:

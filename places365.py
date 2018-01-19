@@ -5,19 +5,20 @@
     by Bolei Zhou, sep 2, 2017
 '''
 
+import cv2
+from libxmp import XMPFiles, consts
+import numpy as np
+import os
+from PIL import Image
+from scipy.misc import imresize as imresize
+import sys
+
 import torch
 from torch.autograd import Variable as V
 from torch.nn import functional as F
 
 import torchvision.models as models
 from torchvision import transforms as trn
-
-import os
-import numpy as np
-from scipy.misc import imresize as imresize
-import cv2
-from PIL import Image
-import sys
 
 
 def image_var_laplacian(img):
@@ -104,6 +105,16 @@ def compute_blurriness(imgpath):
     bluriness = image_var_canny(img_cv2)
     return bluriness
 
+def update_xmp(imgpath):
+    """ updates the xmp data in the image, or creates a sidecar xmp """
+    embeddedXmpFormats = ['jpg', 'png', 'tif', 'gif', 'pdf']
+
+    print(imgpath)
+
+    xmpfile = XMPFiles( file_path=imgpath, open_forupdate=True)
+    xmp = xmpfile.get_xmp()
+    print(xmp.get_property(consts.XMP_NS_DC, 'format' ))
+    return 0
 
 class TaggedImage(object):
     '''

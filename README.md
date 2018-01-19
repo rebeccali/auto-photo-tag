@@ -2,7 +2,7 @@
 
 Copyright (c) Rebecca Li 2018 under the MIT License.
 
-Auto Photo Tag is a photo tagging tool that utilizes CNNs in order to identify scene attributes and the humans in the image, and populates those tags in the image metadata. Auto Photo Tag works on all kinds of images, including full size RAW image formats (DNG, NEF, RAW) as well as compressed image formats (JPG, PNG, BMP, GIF, TIFF).
+Auto Photo Tag is a photo tagging tool that utilizes CNNs in order to identify scene attributes and the humans in the image, and populates those tags in the image metadata. Auto Photo Tag works on all kinds of images, including full size RAW image formats (DNG, NEF) as well as compressed image formats (JPEG, JPEG 2000, PNG).
 
 Auto Photo Tag utilizes the following CNN projects using PyTorch:
  * [Places Project](http://places2.csail.mit.edu)
@@ -16,6 +16,7 @@ Unfortunately, this project relies upon many python 3 packages:
 * PIL
 * Torch
 * Numpy
+* Python XMP toolkit
 
 ## Usage
 
@@ -32,6 +33,7 @@ Example:
 * Add tags to original raw images.
 * Add a UI
 * Add Human identifiers
+* Add support for sidecar xmp
 
 
 ## Reference
