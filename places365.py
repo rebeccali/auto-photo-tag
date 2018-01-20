@@ -107,13 +107,25 @@ def compute_blurriness(imgpath):
 
 def update_xmp(imgpath):
     """ updates the xmp data in the image, or creates a sidecar xmp """
-    embeddedXmpFormats = ['jpg', 'png', 'tif', 'gif', 'pdf']
 
-    print(imgpath)
+    # NEF requires sidecar
+    embeddedXmpFormats = ['jpg', 'png', 'tif', 'dng']
 
-    xmpfile = XMPFiles( file_path=imgpath, open_forupdate=True)
-    xmp = xmpfile.get_xmp()
-    print(xmp.get_property(consts.XMP_NS_DC, 'format' ))
+    if imgpath.lower().endswith(tuple(embeddedXmpFormats)):
+
+        xmpfile = XMPFiles(file_path=imgpath, open_forupdate=True)
+        xmp = xmpfile.get_xmp()
+        xmp.set_property(consts.XMP_NS_DC, u'attributes', u'dummyattr')
+        # print(xmp.get_property(consts.XMP_NS_DC, 'attributes'))
+
+        if xmpfile.can_put_xmp(xmp):
+            xmpfile.put_xmp(xmp)
+
+        else:
+            xmpfile.close_file()
+            raise Exception('Cannot write xmp to ' + imgpath)
+
+        xmpfile.close_file()
     return 0
 
 class TaggedImage(object):
