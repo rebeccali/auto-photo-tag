@@ -7,6 +7,7 @@
 
 import cv2
 from libxmp import XMPFiles, consts
+from libxmp.utils import file_to_dict
 import numpy as np
 import os
 from PIL import Image
@@ -16,8 +17,6 @@ import sys
 import torch
 from torch.autograd import Variable as V
 from torch.nn import functional as F
-
-import torchvision.models as models
 from torchvision import transforms as trn
 
 
@@ -104,28 +103,62 @@ def compute_blurriness(imgpath):
     # bluriness = self.image_var_laplacian(img_cv2)
     bluriness = image_var_canny(img_cv2)
     return bluriness
+def blank_xmp():
+    """ generate blank xmp file string """
+    s = ''
+    with open('default.xml', 'r') as f:
+        s = f.read()
+    return s
 
-def update_xmp(imgpath):
+def update_xmp(imgpath, keywords):
     """ updates the xmp data in the image, or creates a sidecar xmp """
+
+    # Check if a sidecar file already exists
+    if os.path.isfile(imgpath + '.xmp'):
+        imgpath = imgpath + '.xmp'
 
     # NEF requires sidecar
     embeddedXmpFormats = ['jpg', 'png', 'tif', 'dng']
 
-    if imgpath.lower().endswith(tuple(embeddedXmpFormats)):
+    if not imgpath.lower().endswith(tuple(embeddedXmpFormats)):
+        # create and use sidecar file
+        imgpath = imgpath + '.xmp'
+        with open(imgpath, 'w+') as f:
+            f.write(blank_xmp())
+            print('wrote in' + imgpath)
 
-        xmpfile = XMPFiles(file_path=imgpath, open_forupdate=True)
-        xmp = xmpfile.get_xmp()
-        xmp.set_property(consts.XMP_NS_DC, u'attributes', u'dummyattr')
-        # print(xmp.get_property(consts.XMP_NS_DC, 'attributes'))
+    xmpfiledict = file_to_dict(imgpath)
+    existing_keywords = []
+    try:
+        dc = []
+        dc.append(xmpfiledict[consts.XMP_NS_DC])
+        existing_keywords = [x[1] for x in dc]
+    except:
+        print('nothing')
+    print('existing_keywords')
+    print(existing_keywords)
 
-        if xmpfile.can_put_xmp(xmp):
-            xmpfile.put_xmp(xmp)
+    xmpfile = XMPFiles(file_path=imgpath, open_forupdate=True)
+    xmp = xmpfile.get_xmp()
+    print(xmp)
+    keywords_to_add = [x for x in keywords if x not in existing_keywords]
+    print('keywords to add')
+    print(keywords_to_add)
 
-        else:
-            xmpfile.close_file()
-            raise Exception('Cannot write xmp to ' + imgpath)
+    def add_keyword(k):
+        """ helper func """
+        xmp.append_array_item(consts.XMP_NS_DC, u'subject', k)
 
+    _ = [add_keyword(x) for x in keywords_to_add]
+
+    if xmpfile.can_put_xmp(xmp):
+        xmpfile.put_xmp(xmp)
+
+    else:
         xmpfile.close_file()
+        raise Exception('Cannot write xmp to ' + imgpath)
+
+    xmpfile.close_file()
     return 0
 
 class TaggedImage(object):
@@ -140,6 +173,10 @@ class TaggedImage(object):
     def get_imgpath(self):
         """gets imgpath"""
         return self._imgpath
+
+    def get_attributes(self):
+        """ gets attributes"""
+        return self._attributes
 
     def hook_feature(self, module, input, output):
         """hooks feature for register hook"""

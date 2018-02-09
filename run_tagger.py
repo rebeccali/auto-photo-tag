@@ -17,6 +17,7 @@ parser.add_argument('--names-only', help='print filenames only', default=False, 
 
 args = parser.parse_args()
 
+# acceptedFileExtentions = ['jpg', 'png', 'tif', 'dng', 'nef']
 acceptedFileExtentions = ['jpg', 'png', 'tif', 'dng', 'nef']
 
 # get files in directory
@@ -43,7 +44,7 @@ startTime = datetime.now()
 
 for path in paths:
     imgplaces = pl.TaggedImage(path, True)
-    pl.update_xmp(path)
+    pl.update_xmp(path, imgplaces.get_attributes())
     if args.names_only:
         print(imgplaces.get_imgpath)
     elif not args.stfu:
@@ -54,4 +55,4 @@ elapsed_time_per_image = elapsed_time / num_images
 
 if not args.stfu:
     print('Process time: %0.2f seconds' % elapsed_time)
-    print('Process time per image: %0.2f milliseconds' % elapsed_time_per_image)
+    print('Process time per image: %0.2f seconds' % elapsed_time_per_image)
