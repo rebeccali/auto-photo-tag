@@ -112,26 +112,28 @@ def blank_xmp():
 
 def update_xmp(imgpath, keywords):
     """ updates the xmp data in the image, or creates a sidecar xmp """
-
-    # Check if a sidecar file already exists
-    if os.path.isfile(imgpath + '.xmp'):
-        imgpath = imgpath + '.xmp'
-
     # NEF requires sidecar
+    print(imgpath)
     embeddedXmpFormats = ['jpg', 'png', 'tif', 'dng']
 
-    if not imgpath.lower().endswith(tuple(embeddedXmpFormats)):
-        # create and use sidecar file
-        imgpath = imgpath + '.xmp'
-        with open(imgpath, 'w+') as f:
-            f.write(blank_xmp())
-            print('wrote in' + imgpath)
+    # # Check if a sidecar file already exists
+    # if os.path.isfile(imgpath + '.xmp'):
+    #     imgpath = imgpath + '.xmp'
+
+    # # if it doesn't exist, does it need one?
+    # elif not imgpath.lower().endswith(tuple(embeddedXmpFormats)):
+    #     # create and use sidecar file
+    #     imgpath = imgpath + '.xmp'
+    #     with open(imgpath, 'w+') as f:
+    #         f.write(blank_xmp())
+    #         print('wrote in' + imgpath)
+
 
     xmpfiledict = file_to_dict(imgpath)
     existing_keywords = []
     try:
-        dc = []
         dc.append(xmpfiledict[consts.XMP_NS_DC])
+        print(dc)
         existing_keywords = [x[1] for x in dc]
     except:
         print('nothing')

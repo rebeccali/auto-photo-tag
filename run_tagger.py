@@ -17,8 +17,7 @@ parser.add_argument('--names-only', help='print filenames only', default=False, 
 
 args = parser.parse_args()
 
-# acceptedFileExtentions = ['jpg', 'png', 'tif', 'dng', 'nef']
-acceptedFileExtentions = ['jpg', 'png', 'tif', 'dng', 'nef']
+acceptedFileExtentions = ['jpg', 'png', 'tif', 'dng']
 
 # get files in directory
 if os.path.isfile(args.path):

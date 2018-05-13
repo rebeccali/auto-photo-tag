@@ -36,7 +36,7 @@ Example:
 ```
 
 
-## Todo
+## Features yet to be implemented
 
 * Add a UI
 * Add Human identifiers
